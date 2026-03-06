@@ -27,7 +27,7 @@ export default function Navbar() {
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center gap-6">
                     <Link to="/vacantes" className="text-neutral-600 font-medium hover:text-primary hover:bg-neutral-100 px-3 py-2 rounded-md transition-colors">
-                        Vacantes
+                        {user?.rol === 'empleador' ? 'Trabajadores' : 'Vacantes'}
                     </Link>
                     <Link to="/educativo" className="text-neutral-600 font-medium hover:text-primary hover:bg-neutral-100 px-3 py-2 rounded-md transition-colors">
                         Aprende
@@ -72,7 +72,7 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="md:hidden absolute top-16 left-0 right-0 bg-white border-b border-neutral-200 shadow-xl flex flex-col p-4 gap-2">
                     <Link to="/vacantes" className="text-neutral-600 font-medium p-3 rounded-md hover:bg-neutral-100" onClick={() => setIsMenuOpen(false)}>
-                        Vacantes
+                        {user?.rol === 'empleador' ? 'Trabajadores' : 'Vacantes'}
                     </Link>
                     <Link to="/educativo" className="text-neutral-600 font-medium p-3 rounded-md hover:bg-neutral-100" onClick={() => setIsMenuOpen(false)}>
                         Aprende

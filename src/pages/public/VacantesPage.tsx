@@ -1,11 +1,12 @@
 // ========================
-// La Red Chambera — Vacantes Page (Tailwind)
+// La Red Chambera — Vacantes / Trabajadores Page (Role-based)
 // ========================
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import * as api from '../../services/api';
-import type { Vacante, VacanteFilters } from '../../types';
+import { useAuth } from '../../context/AuthContext';
+import type { Vacante, VacanteFilters, FichaTrabajo } from '../../types';
 
 const TIPOS_TRABAJO = [
     'Albañilería', 'Campo', 'Cocina', 'Mecánica', 'Limpieza',
@@ -14,10 +15,21 @@ const TIPOS_TRABAJO = [
 ];
 
 export default function VacantesPage() {
+    const { user } = useAuth();
+
+    // empleador sees fichas (workers), everyone else sees vacantes (jobs)
+    const showFichas = user?.rol === 'empleador';
+
+    return showFichas ? <FichasView /> : <VacantesView />;
+}
+
+// ── Vacantes View (for trabajadores & public) ────────────
+
+function VacantesView() {
     const [vacantes, setVacantes] = useState<Vacante[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [filters, setFilters] = useState<VacanteFilters>({ tipo_registro: 'vacante' });
+    const [filters, setFilters] = useState<VacanteFilters>({});
     const [totalPages, setTotalPages] = useState(1);
     const [page, setPage] = useState(1);
 
@@ -40,47 +52,11 @@ export default function VacantesPage() {
         }
     };
 
-    const activeTab = filters.tipo_registro || 'vacante';
-
     return (
         <div className="flex flex-col">
             <div className="mb-8">
-                <h1 className="text-3xl font-extrabold text-neutral-900 mb-2">
-                    {activeTab === 'vacante' ? '🔍 Vacantes Disponibles' : '👷 Trabajadores Disponibles'}
-                </h1>
-                <p className="text-lg text-neutral-600">
-                    {activeTab === 'vacante'
-                        ? 'Encuentra la chamba que estás buscando en Tejupilco de Hidalgo'
-                        : 'Encuentra trabajadores que ofrecen sus servicios en Tejupilco de Hidalgo'}
-                </p>
-            </div>
-
-            {/* Tabs: Vacantes / Trabajadores */}
-            <div className="flex gap-2 mb-6">
-                <button
-                    className={`px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'vacante'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
-                        }`}
-                    onClick={() => {
-                        setFilters({ ...filters, tipo_registro: 'vacante' });
-                        setPage(1);
-                    }}
-                >
-                    📢 Vacantes
-                </button>
-                <button
-                    className={`px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'trabajador'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
-                        }`}
-                    onClick={() => {
-                        setFilters({ ...filters, tipo_registro: 'trabajador' });
-                        setPage(1);
-                    }}
-                >
-                    👷 Trabajadores
-                </button>
+                <h1 className="text-3xl font-extrabold text-neutral-900 mb-2">🔍 Vacantes Disponibles</h1>
+                <p className="text-lg text-neutral-600">Encuentra la chamba que estás buscando en Tejupilco de Hidalgo</p>
             </div>
 
             {/* Filters */}
@@ -131,16 +107,12 @@ export default function VacantesPage() {
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                     <div className="w-10 h-10 border-4 border-neutral-200 border-t-primary rounded-full animate-spin" />
-                    <p className="text-neutral-600 font-medium">
-                        {activeTab === 'vacante' ? 'Buscando vacantes...' : 'Buscando trabajadores...'}
-                    </p>
+                    <p className="text-neutral-600 font-medium">Buscando vacantes...</p>
                 </div>
             ) : vacantes.length === 0 ? (
                 <div className="text-center py-20 text-neutral-500">
                     <span className="text-5xl block mb-4">📭</span>
-                    <h3 className="text-xl font-bold text-neutral-800 mb-2">
-                        {activeTab === 'vacante' ? 'No hay vacantes con esos filtros' : 'No hay trabajadores con esos filtros'}
-                    </h3>
+                    <h3 className="text-xl font-bold text-neutral-800 mb-2">No hay vacantes con esos filtros</h3>
                     <p>Intenta cambiar los filtros o vuelve más tarde.</p>
                 </div>
             ) : (
@@ -193,6 +165,154 @@ export default function VacantesPage() {
                         </div>
                     )}
                 </>
+            )}
+        </div>
+    );
+}
+
+// ── Fichas View (for empleadores — browse worker portfolios) ─
+
+function FichasView() {
+    const [fichas, setFichas] = useState<FichaTrabajo[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [filtroTipo, setFiltroTipo] = useState('');
+
+    useEffect(() => {
+        fetchFichas();
+    }, []);
+
+    const fetchFichas = async () => {
+        try {
+            const data = await api.getFichas();
+            setFichas(data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Error cargando trabajadores');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filtradas = filtroTipo
+        ? fichas.filter((f) => f.tipo_trabajo === filtroTipo)
+        : fichas;
+
+    // Extract unique tipo_trabajo values for filter
+    const tiposDisponibles = Array.from(new Set(fichas.map((f) => f.tipo_trabajo))).filter(Boolean);
+
+    return (
+        <div className="flex flex-col">
+            <div className="mb-8">
+                <h1 className="text-3xl font-extrabold text-neutral-900 mb-2">👷 Trabajadores Disponibles</h1>
+                <p className="text-lg text-neutral-600">Encuentra al chambeador ideal para tu proyecto en Tejupilco de Hidalgo</p>
+            </div>
+
+            {/* Filters */}
+            {tiposDisponibles.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-8">
+                    <button
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${filtroTipo === ''
+                            ? 'bg-primary text-white shadow-md'
+                            : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                            }`}
+                        onClick={() => setFiltroTipo('')}
+                    >
+                        Todos
+                    </button>
+                    {tiposDisponibles.map((tipo) => (
+                        <button
+                            key={tipo}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${filtroTipo === tipo
+                                ? 'bg-primary text-white shadow-md'
+                                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                                }`}
+                            onClick={() => setFiltroTipo(tipo)}
+                        >
+                            {tipo}
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* Results */}
+            {error && <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200 mb-6 font-medium">{error}</div>}
+
+            {loading ? (
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                    <div className="w-10 h-10 border-4 border-neutral-200 border-t-primary rounded-full animate-spin" />
+                    <p className="text-neutral-600 font-medium">Buscando trabajadores...</p>
+                </div>
+            ) : filtradas.length === 0 ? (
+                <div className="text-center py-20 text-neutral-500">
+                    <span className="text-5xl block mb-4">📭</span>
+                    <h3 className="text-xl font-bold text-neutral-800 mb-2">No hay trabajadores disponibles</h3>
+                    <p>Pronto más trabajadores se registrarán en la plataforma.</p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filtradas.map((ficha) => (
+                        <div
+                            key={ficha.id}
+                            className="bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col group"
+                        >
+                            {/* Image */}
+                            <div className="h-48 overflow-hidden bg-neutral-100 relative">
+                                {ficha.imagenes && ficha.imagenes.length > 0 ? (
+                                    <>
+                                        <img src={ficha.imagenes[0]} alt={ficha.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        {ficha.imagenes.length > 1 && (
+                                            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+                                                <span>📸</span> +{ficha.imagenes.length - 1} fotos
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-5xl text-neutral-300">
+                                        👷
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-5 flex flex-col flex-1">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">
+                                        {ficha.tipo_trabajo}
+                                    </span>
+                                </div>
+
+                                <h3 className="text-lg font-bold text-neutral-900 mb-2 leading-snug group-hover:text-primary transition-colors">
+                                    {ficha.titulo}
+                                </h3>
+                                <p className="text-sm text-neutral-600 mb-4 line-clamp-2 flex-1">
+                                    {ficha.descripcion}
+                                </p>
+
+                                {/* Worker info */}
+                                {ficha.trabajador && (
+                                    <div className="flex items-center gap-3 pt-4 border-t border-neutral-100">
+                                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-light to-primary flex items-center justify-center text-white font-bold text-sm shrink-0">
+                                            {(ficha.trabajador.nombre || 'T').charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-sm text-neutral-900 truncate">{ficha.trabajador.nombre}</p>
+                                            <p className="text-xs text-neutral-400">📍 Tejupilco de Hidalgo</p>
+                                        </div>
+                                        <a
+                                            href={`https://wa.me/${ficha.trabajador.whatsapp}?text=${encodeURIComponent(`Hola, vi tu ficha "${ficha.titulo}" en La Red Chambera y me interesa contactarte.`)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="shrink-0 w-9 h-9 flex items-center justify-center bg-[#25d366] text-white rounded-full hover:scale-110 transition-transform shadow-sm"
+                                            title="Contactar por WhatsApp"
+                                        >
+                                            📱
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             )}
         </div>
     );

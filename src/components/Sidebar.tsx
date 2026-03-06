@@ -104,7 +104,7 @@ export default function Sidebar() {
                         }`
                     }
                 >
-                    🔍 Ver Vacantes
+                    {user?.rol === 'empleador' ? '👷 Ver Trabajadores' : '🔍 Ver Vacantes'}
                 </NavLink>
             </nav>
 
