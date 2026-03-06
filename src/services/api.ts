@@ -219,6 +219,7 @@ export async function getAdminStats(): Promise<{
     totalVacantes: number;
     totalFichas: number;
     totalRecomendaciones: number;
+    totalContenido: number;
 }> {
     return request('/admin/stats');
 }

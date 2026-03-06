@@ -11,6 +11,12 @@ export interface User {
   rol: Rol;
   municipio: string;
   foto_perfil?: string;
+  oficios?: string[];
+  descripcion?: string;
+  disponibilidad?: string;
+  nombre_negocio?: string;
+  tipo_negocio?: string;
+  direccion?: string;
   created_at: string;
 }
 
@@ -41,6 +47,7 @@ export interface Vacante {
   empleador_id: number;
   empleador?: Empleador;
   activa: boolean;
+  tipo_registro: 'vacante' | 'trabajador';
   created_at: string;
 }
 
@@ -52,6 +59,7 @@ export interface FichaTrabajo {
   imagenes: string[];
   tipo_trabajo: string;
   fecha_realizacion?: string;
+  trabajador?: User;
   created_at: string;
 }
 
@@ -111,6 +119,7 @@ export interface CreateVacanteRequest {
   pago: string;
   requisitos?: string;
   whatsapp_contacto: string;
+  tipo_registro?: 'vacante' | 'trabajador';
 }
 
 export interface CreateFichaRequest {

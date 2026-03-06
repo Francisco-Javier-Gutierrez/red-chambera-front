@@ -42,6 +42,7 @@ export default function CrearVacantePage() {
                 pago,
                 requisitos,
                 whatsapp_contacto: whatsapp,
+                tipo_registro: 'vacante',
             });
             navigate('/mis-vacantes');
         } catch (err) {
