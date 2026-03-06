@@ -99,13 +99,13 @@ export default function MisVacantesPage() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-5 text-neutral-600 font-medium">
-                                        📍 {v.municipio}
+                                        📍 Tejupilco de Hidalgo
                                     </td>
                                     <td className="px-6 py-5">
                                         <span
                                             className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${v.activa
-                                                    ? 'bg-green-100 text-green-700 border border-green-200'
-                                                    : 'bg-neutral-200 text-neutral-600 border border-neutral-300'
+                                                ? 'bg-green-100 text-green-700 border border-green-200'
+                                                : 'bg-neutral-200 text-neutral-600 border border-neutral-300'
                                                 }`}
                                         >
                                             {v.activa ? '🟢 Activa' : '⚪ Pausada'}
@@ -116,8 +116,8 @@ export default function MisVacantesPage() {
                                             <button
                                                 onClick={() => handleToggleEstado(v.id, v.activa)}
                                                 className={`px-4 py-2 text-xs font-bold rounded-lg border-2 transition-colors ${v.activa
-                                                        ? 'border-neutral-200 text-neutral-600 hover:bg-neutral-100'
-                                                        : 'border-green-200 text-green-700 bg-green-50 hover:bg-green-100'
+                                                    ? 'border-neutral-200 text-neutral-600 hover:bg-neutral-100'
+                                                    : 'border-green-200 text-green-700 bg-green-50 hover:bg-green-100'
                                                     }`}
                                             >
                                                 {v.activa ? 'Pausar' : 'Activar'}

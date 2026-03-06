@@ -84,8 +84,8 @@ export async function getVacantes(
     filters?: VacanteFilters,
 ): Promise<PaginatedResponse<Vacante>> {
     const params = new URLSearchParams();
-    if (filters?.municipio) params.append('municipio', filters.municipio);
     if (filters?.tipo_trabajo) params.append('tipo_trabajo', filters.tipo_trabajo);
+    if (filters?.tipo_registro) params.append('tipo_registro', filters.tipo_registro);
     if (filters?.horario) params.append('horario', filters.horario);
     if (filters?.page) params.append('page', String(filters.page));
     if (filters?.limit) params.append('limit', String(filters.limit));

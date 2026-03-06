@@ -53,7 +53,7 @@ export default function MiPerfilPage() {
                         </div>
                         <div className="flex flex-col gap-1">
                             <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Municipio Base</span>
-                            <span className="font-medium text-lg text-neutral-900 flex items-center gap-1">📍 {user.municipio}</span>
+                            <span className="font-medium text-lg text-neutral-900 flex items-center gap-1">📍 Tejupilco de Hidalgo</span>
                         </div>
                     </div>
 

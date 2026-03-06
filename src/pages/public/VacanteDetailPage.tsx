@@ -69,7 +69,7 @@ export default function VacanteDetailPage() {
                         </span>
                         <h1 className="text-3xl font-extrabold text-neutral-900 mb-2 leading-tight">{vacante.titulo}</h1>
                         <p className="text-neutral-500 flex items-center gap-2">
-                            <span>📍</span> {vacante.municipio}
+                            <span>📍</span> Tejupilco de Hidalgo
                         </p>
                     </div>
                     <div className="text-right">

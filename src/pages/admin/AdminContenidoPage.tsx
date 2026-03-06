@@ -73,7 +73,7 @@ export default function AdminContenidoPage() {
                                             : 'bg-green-50 text-green-600 border-green-200'
                                             }`}
                                     >
-                                        {item.tipo.toUpperCase()}
+                                        {(item.tipo || 'N/A').toUpperCase()}
                                     </span>
                                     <span className="text-xs font-semibold text-slate-400 font-mono">ID: {item.id}</span>
                                     <span className="text-xs font-semibold text-slate-400 capitalize bg-slate-100 px-2 py-0.5 rounded-full">{item.tipo_trabajo}</span>

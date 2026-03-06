@@ -6,12 +6,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import * as api from '../../services/api';
 
-const MUNICIPIOS = [
-    'Tejupilco', 'Temascaltepec', 'San Simón de Guerrero', 'Sultepec',
-    'Amatepec', 'Tlatlaya', 'Luvianos', 'Zacualpan', 'Almoloya de Alquisiras',
-    'Texcaltitlán', 'Coatepec Harinas', 'Ixtapan de la Sal', 'Tonatico',
-    'Pilcaya', 'Zumpahuacán', 'Malinalco', 'Ocuilan', 'Tenancingo',
-];
+
 
 const TIPOS_TRABAJO = [
     'Albañilería', 'Campo', 'Cocina', 'Mecánica', 'Limpieza',
@@ -25,7 +20,6 @@ export default function CrearVacantePage() {
     const [titulo, setTitulo] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [tipoTrabajo, setTipoTrabajo] = useState('');
-    const [municipio, setMunicipio] = useState('');
     const [horario, setHorario] = useState('');
     const [pago, setPago] = useState('');
     const [requisitos, setRequisitos] = useState('');
@@ -44,7 +38,6 @@ export default function CrearVacantePage() {
                 titulo,
                 descripcion,
                 tipo_trabajo: tipoTrabajo,
-                municipio,
                 horario,
                 pago,
                 requisitos,
@@ -110,26 +103,6 @@ export default function CrearVacantePage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="municipio" className="font-semibold text-sm text-neutral-700">Municipio</label>
-                            <div className="relative">
-                                <select
-                                    id="municipio"
-                                    value={municipio}
-                                    onChange={(e) => setMunicipio(e.target.value)}
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all bg-neutral-50 focus:bg-white text-neutral-900 appearance-none cursor-pointer"
-                                >
-                                    <option value="">Selecciona...</option>
-                                    {MUNICIPIOS.map((m) => (
-                                        <option key={m} value={m}>{m}</option>
-                                    ))}
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
-                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div className="flex flex-col gap-2">

@@ -88,7 +88,6 @@ export interface RegisterRequest {
   whatsapp: string;
   password: string;
   rol: 'trabajador' | 'empleador';
-  municipio: string;
 }
 
 export interface AuthResponse {
@@ -97,9 +96,9 @@ export interface AuthResponse {
 }
 
 export interface VacanteFilters {
-  municipio?: string;
   tipo_trabajo?: string;
   horario?: string;
+  tipo_registro?: 'vacante' | 'trabajador';
   page?: number;
   limit?: number;
 }
@@ -108,7 +107,6 @@ export interface CreateVacanteRequest {
   titulo: string;
   descripcion: string;
   tipo_trabajo: string;
-  municipio: string;
   horario: string;
   pago: string;
   requisitos?: string;

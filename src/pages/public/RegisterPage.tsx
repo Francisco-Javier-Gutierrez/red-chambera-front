@@ -6,12 +6,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const MUNICIPIOS = [
-    'Tejupilco', 'Temascaltepec', 'San Simón de Guerrero', 'Sultepec',
-    'Amatepec', 'Tlatlaya', 'Luvianos', 'Zacualpan', 'Almoloya de Alquisiras',
-    'Texcaltitlán', 'Coatepec Harinas', 'Ixtapan de la Sal', 'Tonatico',
-    'Pilcaya', 'Zumpahuacán', 'Malinalco', 'Ocuilan', 'Tenancingo',
-];
+
 
 export default function RegisterPage() {
     const { register } = useAuth();
@@ -22,7 +17,6 @@ export default function RegisterPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [rol, setRol] = useState<'trabajador' | 'empleador'>('trabajador');
-    const [municipio, setMunicipio] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -38,7 +32,7 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            await register({ nombre, whatsapp, password, rol, municipio });
+            await register({ nombre, whatsapp, password, rol });
             navigate('/mi-perfil', { replace: true });
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Error al registrarse');
@@ -68,8 +62,8 @@ export default function RegisterPage() {
                         <button
                             type="button"
                             className={`flex flex-col items-center gap-2 p-4 md:p-6 border-2 rounded-xl transition-all font-semibold text-sm ${rol === 'trabajador'
-                                    ? 'border-primary bg-primary/5 text-primary'
-                                    : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-primary-light'
+                                ? 'border-primary bg-primary/5 text-primary'
+                                : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-primary-light'
                                 }`}
                             onClick={() => setRol('trabajador')}
                         >
@@ -79,8 +73,8 @@ export default function RegisterPage() {
                         <button
                             type="button"
                             className={`flex flex-col items-center gap-2 p-4 md:p-6 border-2 rounded-xl transition-all font-semibold text-sm ${rol === 'empleador'
-                                    ? 'border-primary bg-primary/5 text-primary'
-                                    : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-primary-light'
+                                ? 'border-primary bg-primary/5 text-primary'
+                                : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-primary-light'
                                 }`}
                             onClick={() => setRol('empleador')}
                         >
@@ -147,28 +141,7 @@ export default function RegisterPage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="municipio" className="font-semibold text-sm text-neutral-700">Municipio</label>
-                        <div className="relative">
-                            <select
-                                id="municipio"
-                                value={municipio}
-                                onChange={(e) => setMunicipio(e.target.value)}
-                                required
-                                className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all bg-neutral-50 focus:bg-white text-neutral-900 appearance-none cursor-pointer"
-                            >
-                                <option value="">Selecciona tu municipio</option>
-                                {MUNICIPIOS.map((m) => (
-                                    <option key={m} value={m}>
-                                        {m}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
-                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <button
                         type="submit"
